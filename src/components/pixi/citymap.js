@@ -1,6 +1,6 @@
 export default class CityMap {
     map = [];
-    mapSize = {x: 30, y: 30}
+    mapSize = {x: 50, y: 50}
 
     init() {
         for (let y = 0; y < this.mapSize.y; y++) {

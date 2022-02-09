@@ -3,7 +3,7 @@ import CityMap from './citymap';
 import { blockBuilder, blockBuilder2 } from './blockBuilder';
 import GroupObject from './groupObject';
 import {Howl} from 'howler';
-import { Graphics } from 'pixi.js';
+import { Graphics, Sprite } from 'pixi.js';
 export default class PixiMain {
     url = './assets/tilemap.png';
     urlWasd = './assets/WASD_grey.png';
@@ -57,11 +57,12 @@ export default class PixiMain {
         // object yg blocking
         objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getBuilding(6, 6), this.centerMap))
         objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getFence(20, 15), {x: newPos.x - 1, y: newPos.y - 1}))
-        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getRiver(this.cityMap.map[0].length, 3, 16), {x: this.centerMap.x, y: this.centerMap.y + 23}))
+        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getRiver(this.cityMap.map[0].length, 3, 16), {x: this.centerMap.x, y: this.centerMap.y + 26}))
 
         // object yg tidak blocking
-        objectNonBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getGarden(), {x: newPos.x + 9, y: newPos.y}))
-        objectNonBlocked.addChild(blockBuilder(this.url, this.unit, [{x: 11, y: 7, nowx: 1, nowy: 1}], {x: newPos.x + 6, y: newPos.y + 6}))
+        objectNonBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getGarden(), {x: newPos.x + 9, y: newPos.y})) // 0
+        objectNonBlocked.addChild(blockBuilder(this.url, this.unit, [{x: 11, y: 7, nowx: 1, nowy: 1}], {x: newPos.x + 6, y: newPos.y + 6})) // 1
+        objectNonBlocked.addChild(this.getGithub()) // 2
 
         this.cityMapBlock.addChild(objectBlocked);
         this.cityMapBlock.addChild(objectNonBlocked);
@@ -165,6 +166,13 @@ export default class PixiMain {
         return allBounds.find(data => data.x === aBox.x + (dir.x * this.unit) && data.y === aBox.y + (dir.y * this.unit)) ? false : true;
     }
 
+    onPosition(a, b) {
+        const aBox = a.getBounds();
+        const bBox = b.getBounds();
+
+        return aBox.x === bBox.x && aBox.y === bBox.y
+    }
+
     collisionObjvsListCont(aObj, bConts, dir) {
         const aBox = aObj.getBounds();
         let allBounds = [];
@@ -212,5 +220,13 @@ export default class PixiMain {
             valid = valid && this.collisionObjvsCont(this.player, container, dir)
         }
         return valid;
+    }
+
+    getGithub() {
+        const github = PIXI.Sprite.from('./GitHub-Mark-32px.png');
+        github.scale.set(0.5, 0.5);
+        github.x = (this.centerMap.x + 22) * this.unit;
+        github.y = (this.centerMap.y + 5) * this.unit;
+        return github;
     }
 }

@@ -1,5 +1,39 @@
 <template>
-  
+    <div>
+        <div class="floating">
+            <md-button class="md-raised md-accent md-fab" @click="volume(0)" v-if="isSoundPositive">
+                <md-icon>volume_off</md-icon>
+            </md-button>
+            <md-button class="md-raised md-primary md-fab" @click="volume(0.05)" v-if="!isSoundPositive">
+                <md-icon>volume_mute</md-icon>
+            </md-button>
+        </div>
+
+        <div class="floating-2">
+            <md-card v-if="isInfoGh">
+            <md-card-header>
+                <md-avatar>
+                <img src="../../public/GitHub-Mark-64px.png" alt="Github">
+                </md-avatar>
+
+                <md-card-header-text>
+                <div class="md-title">My Github</div>
+                <div class="md-subhead">And this Repo</div>
+                </md-card-header-text>
+
+            </md-card-header>
+
+            <md-card-actions>
+                <a href="https://github.com/damarkrisnandi" target="_blank">
+                    <md-button>My Github</md-button>
+                </a>
+                <a href="https://github.com/damarkrisnandi/vue-village">
+                    <md-button>This Repo</md-button>
+                </a>
+            </md-card-actions>
+            </md-card>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -13,7 +47,9 @@ export default {
             player: null,
             cityMapBlock: null,
             unit: 16,
-            sound: null
+            sound: {volume: 0.05},
+            isSoundPositive: true,
+            isInfoGh: false
         }
     },
     created() {
@@ -53,56 +89,62 @@ export default {
         },
         keyDownHandler(e) {
         // Your handler code here
+            let move = {x: 0, y: 0};
             const controls = {
                 w: () => { 
                     this.player = this.pixi.playerUp();
-                    if (
-                        this.pixi.isPassable(this.pixi.getNeighbor(0, -1)) &&
-                        this.pixi.checkAllCollision({x: 0, y: -1})
-                    ) {
-                        this.cityMapBlock.y += this.unit; 
-                        
-                    }
+                    move = {x: 0, y: -1};
                 },
                 a: () => { 
                     this.player = this.pixi.playerLeft()
-                    if (
-                        this.pixi.isPassable(this.pixi.getNeighbor(-1, 0)) &&
-                        this.pixi.checkAllCollision({x: -1, y: 0})
-                    ) {
-                        this.cityMapBlock.x += this.unit;  
-                    }
+                    move = {x: -1, y: 0};
                 },
                 s: () => { 
                     this.player = this.pixi.playerDown()
-                    if (
-                        this.pixi.isPassable(this.pixi.getNeighbor(0, 1)) &&
-                        this.pixi.checkAllCollision({x: 0, y: 1})
-                    ) {
-                        this.cityMapBlock.y -= this.unit;
-                        
-                    }
+                    move = {x: 0, y: 1};
                 },
                 d: () => { 
                     this.player = this.pixi.playerRight()
-                    if (
-                        this.pixi.isPassable(this.pixi.getNeighbor(1, 0)) &&
-                        this.pixi.checkAllCollision({x: 1, y: 0})
-                    ) {
-                        this.cityMapBlock.x -= this.unit;
-                        
-                    } 
+                    move = {x: 1, y: 0}; 
                 }
             };
 
             try {
                 controls[(e.key).toLowerCase()](); 
+                if (
+                    this.pixi.isPassable(this.pixi.getNeighbor(move.x, move.y)) &&
+                    this.pixi.checkAllCollision(move)
+                ) {
+                    this.cityMapBlock.x -= (move.x * this.unit)
+                    this.cityMapBlock.y -= (move.y * this.unit); 
+                }
+
                 this.updateCanvas();
+                this.isInfoGh = false;
+                this.getAction(this.pixi.cityMapBlock.children[2].children[2], () => {
+                    this.isInfoGh = true;
+                })
                 
             } catch (error) {
                 console.log(error);
             }
 
+        },
+        volume(x) {
+            // this.sound.stop();
+            this.sound.volume(x);
+            // this.sound.play();
+            if (x > 0) {
+                this.isSoundPositive = true;
+            } else {
+                this.isSoundPositive = false;
+            }
+        },
+
+        getAction(object, action) {
+            if (this.pixi.onPosition(this.player, object)) {
+                action();
+            }
         }
         
     }
@@ -111,4 +153,23 @@ export default {
 
 <style>
 
+    .floating {
+        position: fixed;
+        bottom:0;
+        right: 0;
+        margin-bottom: 16px;
+        margin-right: 16px;
+        opacity: 0.8;
+        z-index: 999;
+    }
+
+    .floating-2 {
+        position: fixed;
+        top:0;
+        right: 0;
+        margin-top: 16px;
+        margin-right: 16px;
+        opacity: 0.8;
+        z-index: 999;
+    }
 </style>
