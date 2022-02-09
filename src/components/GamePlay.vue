@@ -10,7 +10,7 @@
         </div>
 
         <div class="floating-2">
-            <md-card v-if="isInfoGh">
+            <md-card v-if="isInfoGh" class="md-primary">
             <md-card-header>
                 <md-avatar>
                 <img src="../../public/GitHub-Mark-64px.png" alt="Github">

@@ -203,4 +203,21 @@ export default class GroupObject {
 
         return river;
     }
+
+    getStreetToGate() {
+        const street = [];
+        for (let i = 0; i<3; i++) {
+            street.push({x: 5, y: 5, nowx: 1, nowy: i + 1});
+        }
+        street.push({x: 1, y: 7, nowx: 1, nowy: 3});
+
+        for (let i = 1; i<6; i++) {
+            street.push({x: 4, y: 5, nowx: i + 1, nowy: 3});
+        }
+        street.push({x: 3, y: 5, nowx: 7, nowy: 3});
+        for (let i = 0; i<6; i++) {
+            street.push({x: 5, y: 5, nowx: 7, nowy: i + 4});
+        }
+        return street;
+    }
 }

@@ -63,6 +63,7 @@ export default class PixiMain {
         objectNonBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getGarden(), {x: newPos.x + 9, y: newPos.y})) // 0
         objectNonBlocked.addChild(blockBuilder(this.url, this.unit, [{x: 11, y: 7, nowx: 1, nowy: 1}], {x: newPos.x + 6, y: newPos.y + 6})) // 1
         objectNonBlocked.addChild(this.getGithub()) // 2
+        objectNonBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getStreetToGate(), {x: this.centerMap.x + 9, y: this.centerMap.y + 12})) // 3
 
         this.cityMapBlock.addChild(objectBlocked);
         this.cityMapBlock.addChild(objectNonBlocked);
