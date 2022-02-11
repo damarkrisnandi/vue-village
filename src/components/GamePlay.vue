@@ -120,10 +120,10 @@ export default {
                 }
 
                 this.updateCanvas();
-                this.isInfoGh = false;
-                this.getAction(this.pixi.cityMapBlock.children[2].children[2], () => {
-                    this.isInfoGh = true;
-                })
+                // this.isInfoGh = false;
+                // this.getAction(this.pixi.cityMapBlock.children[2].children[2], () => {
+                //     this.isInfoGh = true;
+                // })
                 
             } catch (error) {
                 console.log(error);
