@@ -220,4 +220,106 @@ export default class GroupObject {
         }
         return street;
     }
+
+    getChest() {
+        const chest = [{x: 12, y: 6, nowx: 1, nowy: 1}];
+        return chest;
+    }
+
+    getWell() {
+        const well = [
+            {x:13,y:5,nowx:1,nowy:1},
+            {x:13,y:6,nowx:1,nowy:2}
+        ];
+        return well
+    }
+
+    getHill1() {
+        return [
+            {"x":5,"y":4,"nowx":1,"nowy":26},
+            {"x":6,"y":4,"nowx":2,"nowy":26},
+            {"x":6,"y":4,"nowx":3,"nowy":26},
+            {"x":6,"y":4,"nowx":4,"nowy":26},
+            {"x":6,"y":4,"nowx":5,"nowy":26},
+            {"x":6,"y":4,"nowx":6,"nowy":26},
+            {"x":6,"y":4,"nowx":7,"nowy":26},
+            {"x":6,"y":4,"nowx":8,"nowy":26},
+            {"x":6,"y":4,"nowx":9,"nowy":26},
+            {"x":6,"y":4,"nowx":10,"nowy":26},
+            {"x":6,"y":4,"nowx":11,"nowy":26},
+            {"x":6,"y":4,"nowx":12,"nowy":26},
+            {"x":6,"y":4,"nowx":13,"nowy":26},
+            {"x":6,"y":4,"nowx":14,"nowy":26},
+            {"x":6,"y":4,"nowx":15,"nowy":26},
+            {"x":6,"y":4,"nowx":16,"nowy":26},
+            {"x":6,"y":4,"nowx":17,"nowy":26},
+            {"x":6,"y":4,"nowx":18,"nowy":26},
+            {"x":6,"y":4,"nowx":19,"nowy":26},
+            {"x":6,"y":4,"nowx":20,"nowy":26},
+            {"x":6,"y":4,"nowx":21,"nowy":26},
+            {"x":6,"y":4,"nowx":22,"nowy":26},
+            {"x":6,"y":4,"nowx":23,"nowy":26},
+            {"x":6,"y":4,"nowx":26,"nowy":26},
+            {"x":6,"y":4,"nowx":27,"nowy":26},
+            {"x":7,"y":4,"nowx":28,"nowy":26},
+            {"x":7,"y":3,"nowx":28,"nowy":25},
+            {"x":7,"y":3,"nowx":28,"nowy":24},
+            {"x":7,"y":3,"nowx":28,"nowy":23},
+            {"x":7,"y":3,"nowx":28,"nowy":22},
+            {"x":7,"y":3,"nowx":28,"nowy":21},
+            {"x":7,"y":3,"nowx":28,"nowy":20},
+            {"x":7,"y":3,"nowx":28,"nowy":19},
+            {"x":7,"y":3,"nowx":28,"nowy":18},
+            {"x":7,"y":3,"nowx":28,"nowy":17},
+            {"x":7,"y":3,"nowx":28,"nowy":16},
+            {"x":7,"y":3,"nowx":28,"nowy":15},
+            {"x":7,"y":3,"nowx":28,"nowy":14},
+            {"x":7,"y":3,"nowx":28,"nowy":13},
+            {"x":7,"y":3,"nowx":28,"nowy":12},
+            {"x":7,"y":3,"nowx":28,"nowy":11},
+            {"x":7,"y":3,"nowx":28,"nowy":10},
+            {"x":7,"y":3,"nowx":28,"nowy":9},
+            {"x":7,"y":3,"nowx":28,"nowy":8},
+            {"x":7,"y":3,"nowx":28,"nowy":7},
+            {"x":7,"y":3,"nowx":28,"nowy":6},
+            {"x":7,"y":3,"nowx":28,"nowy":5},
+            {"x":7,"y":3,"nowx":28,"nowy":4},
+            {"x":7,"y":3,"nowx":28,"nowy":3},
+            {"x":7,"y":3,"nowx":28,"nowy":2},
+            {"x":7,"y":2,"nowx":28,"nowy":1},
+            {"x":11,"y":4,"nowx":1,"nowy":27},
+            {"x":11,"y":4,"nowx":2,"nowy":27},
+            {"x":11,"y":4,"nowx":3,"nowy":27},
+            {"x":11,"y":4,"nowx":4,"nowy":27},
+            {"x":11,"y":4,"nowx":5,"nowy":27},
+            {"x":11,"y":4,"nowx":6,"nowy":27},
+            {"x":11,"y":4,"nowx":7,"nowy":27},
+            {"x":11,"y":4,"nowx":8,"nowy":27},
+            {"x":11,"y":4,"nowx":9,"nowy":27},
+            {"x":11,"y":4,"nowx":10,"nowy":27},
+            {"x":11,"y":4,"nowx":11,"nowy":27},
+            {"x":11,"y":4,"nowx":12,"nowy":27},
+            {"x":11,"y":4,"nowx":13,"nowy":27},
+            {"x":11,"y":4,"nowx":14,"nowy":27},
+            {"x":11,"y":4,"nowx":15,"nowy":27},
+            {"x":11,"y":4,"nowx":16,"nowy":27},
+            {"x":11,"y":4,"nowx":17,"nowy":27},
+            {"x":11,"y":4,"nowx":18,"nowy":27},
+            {"x":11,"y":4,"nowx":19,"nowy":27},
+            {"x":11,"y":4,"nowx":20,"nowy":27},
+            {"x":11,"y":4,"nowx":21,"nowy":27},
+            {"x":11,"y":4,"nowx":22,"nowy":27},
+            {"x":11,"y":4,"nowx":23,"nowy":27},
+            {"x":11,"y":4,"nowx":26,"nowy":27},
+            {"x":11,"y":4,"nowx":27,"nowy":27},
+            {"x":11,"y":4,"nowx":28,"nowy":27}]
+    }
+
+    getHillStreet1() {
+        return [
+            {"x":10,"y":5,"nowx":24,"nowy":26},
+            {"x":10,"y":5,"nowx":25,"nowy":26},
+            {"x":9,"y":5,"nowx":24,"nowy":27},
+            {"x":9,"y":5,"nowx":25,"nowy":27}]
+    }
 }

@@ -1,9 +1,10 @@
 import * as PIXI from 'pixi.js'
 import CityMap from './citymap';
-import { blockBuilder, blockBuilder2 } from './blockBuilder';
+import { blockBuilder, blockBuilderAnimate } from './blockBuilder';
 import GroupObject from './groupObject';
 import {Howl} from 'howler';
 import { Graphics, Sprite } from 'pixi.js';
+import objects from './objects.json'
 export default class PixiMain {
     url = './assets/tilemap.png';
     urlWasd = './assets/WASD_grey.png';
@@ -48,6 +49,7 @@ export default class PixiMain {
         const pos = {x: 7, y: 7}
         const objectBlocked = new PIXI.Container();
         const objectNonBlocked = new PIXI.Container();
+        const objectInteractive = new PIXI.Container();
         this.centerMap = {
             x: Math.floor((window.innerWidth / 2) / this.unit) + 1 - Math.floor(this.cityMap.mapSize.y / 2), 
             y: Math.floor((window.innerHeight / 2) / this.unit) + 1 - Math.floor(this.cityMap.mapSize.y / 2)
@@ -55,9 +57,12 @@ export default class PixiMain {
         const newPos = {x: this.centerMap.x + pos.x - 1, y: this.centerMap.y + pos.y - 1};
         
         // object yg blocking
-        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getBuilding(6, 6), this.centerMap))
+        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.cityMap.initBound(), this.centerMap))
+        // objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getBuilding(6, 6), this.centerMap))
+        objectBlocked.addChild(blockBuilder(this.url, this.unit, objects.building1, {x: this.centerMap.x + 7, y: this.centerMap.y + 6}))
         objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getFence(20, 15), {x: newPos.x - 1, y: newPos.y - 1}))
-        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getRiver(this.cityMap.map[0].length, 3, 16), {x: this.centerMap.x, y: this.centerMap.y + 26}))
+        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getRiver(this.cityMap.map[0].length, 3, 16), {x: this.centerMap.x, y: this.centerMap.y + 35}))
+        objectBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getWell(), {x: this.centerMap.x + 14, y: this.centerMap.y + 7}))
 
         // object yg tidak blocking
         objectNonBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getGarden(), {x: newPos.x + 9, y: newPos.y})) // 0
@@ -65,8 +70,16 @@ export default class PixiMain {
         // objectNonBlocked.addChild(this.getGithub()) // 2
         objectNonBlocked.addChild(blockBuilder(this.url, this.unit, this.groupObject.getStreetToGate(), {x: this.centerMap.x + 9, y: this.centerMap.y + 12})) // 3
 
+        // hill
+        objectBlocked.addChild(blockBuilder(this.url, this.unit, objects.hill1, this.centerMap))
+        objectNonBlocked.addChild(blockBuilder(this.url, this.unit, objects.hillStep, this.centerMap))
+
+        // bisa interaksi
+        objectInteractive.addChild(blockBuilder(this.url, this.unit, this.groupObject.getChest(), {x: this.centerMap.x + 21, y: this.centerMap.y + 6}))
+        
         this.cityMapBlock.addChild(objectBlocked);
         this.cityMapBlock.addChild(objectNonBlocked);
+        this.cityMapBlock.addChild(objectInteractive);
     }
 
     initBackgrounMusic() {
@@ -82,38 +95,6 @@ export default class PixiMain {
     createPlayer() {
         const blockPlayer = [
             {x: 2, y: 1, nowx: 1, nowy: 1}
-        ]
-        this.player = blockBuilder(this.url, this.unit, blockPlayer, this.center);
-        return this.player;
-    }
-
-    playerDown() {
-        const blockPlayer = [
-            {x: 2, y: 1, nowx: 1, nowy: 1}
-        ]
-        this.player = blockBuilder(this.url, this.unit, blockPlayer, this.center);
-        return this.player;
-    }
-
-    playerLeft() {
-        const blockPlayer = [
-            {x: 2, y: 2, nowx: 1, nowy: 1}
-        ]
-        this.player = blockBuilder(this.url, this.unit, blockPlayer, this.center);
-        return this.player;
-    }
-
-    playerRight() {
-        const blockPlayer = [
-            {x: 2, y: 3, nowx: 1, nowy: 1}
-        ]
-        this.player = blockBuilder(this.url, this.unit, blockPlayer, this.center);
-        return this.player;
-    }
-
-    playerUp() {
-        const blockPlayer = [
-            {x: 2, y: 4, nowx: 1, nowy: 1}
         ]
         this.player = blockBuilder(this.url, this.unit, blockPlayer, this.center);
         return this.player;
@@ -147,19 +128,6 @@ export default class PixiMain {
         return blockMapping;
     }
 
-    mapBounds() {
-        return [
-            'qz', 'qe', 'ec', 'zc'
-        ]
-    }
-
-    collision(a, b) {
-        const aBox = a.getBounds();
-        const bBox = b.getBounds();
-
-        return aBox.x !== bBox.x && aBox.y !== bBox.y
-    }
-
     collisionObjvsCont(aObj, bCont, dir) {
         const aBox = aObj.getBounds();
         const allBounds = bCont.children.map(spr => spr.getBounds());
@@ -174,42 +142,6 @@ export default class PixiMain {
         return aBox.x === bBox.x && aBox.y === bBox.y
     }
 
-    collisionObjvsListCont(aObj, bConts, dir) {
-        const aBox = aObj.getBounds();
-        let allBounds = [];
-        for (const b of bConts) {
-            allBounds = b.children.map(spr => spr.getBounds());
-        }
-
-        return allBounds.find(data => data.x === aBox.x + (dir.x * this.unit) && data.y === aBox.y + (dir.y * this.unit)) ? false : true;
-    }
-
-    isPassable(object) {
-        return !this.mapBounds().includes(object)
-    }
-
-    /**
-         * @param x horizontal neighbor unit
-         * @param y vertical neighbor unit
-         * @returns object pada posisi (x, y) dari sekitar player.
-         * - (1, 0) sebelah kanan
-         * - (-1, 0) sebelah kiri
-         * - (0, -1) di atas
-         * - (0, 1) di bawah
-         */
-     getNeighbor(x, y) {
-        const pos = {
-            y: ((this.player.y + (this.unit * y))/ this.unit) + (this.center.y - 1) - ((this.cityMapBlock.y / this.unit) + (this.centerMap.y - 1)),
-            x: ((this.player.x + (this.unit * x))/ this.unit) + (this.center.x - 1) - ((this.cityMapBlock.x / this.unit) + (this.centerMap.x - 1)) 
-        };
-        return this.cityMap.map[pos.y][pos.x];
-    }
-
-    getObjectImpassable() {
-        const building = this.cityMapBlock.children[1]
-        const fence = this.cityMapBlock.children[3]
-        return [building];
-    }
 
     createWasd() {
         return blockBuilder(this.urlWasd, this.unit, this.groupObject.getWASD(), {x: 1, y: 1})
@@ -229,5 +161,88 @@ export default class PixiMain {
         github.x = (this.centerMap.x + 22) * this.unit;
         github.y = (this.centerMap.y + 5) * this.unit;
         return github;
+    }
+
+    playerStandDownAnimate() {
+        const frames = [
+            {x: 2, y: 1, nowx: 1, nowy: 1}
+        ]
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerWalkDownAnimate() {
+        const frames = [
+            {x: 1, y: 1, nowx: 1, nowy: 1},
+            {x: 2, y: 1, nowx: 1, nowy: 1},
+            {x: 3, y: 1, nowx: 1, nowy: 1},
+            {x: 4, y: 1, nowx: 1, nowy: 1}
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerStandLeftAnimate() {
+        const frames = [
+            {x: 2, y: 2, nowx: 1, nowy: 1}
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerWalkLeftAnimate() {
+        const frames = [
+            {x: 1, y: 2, nowx: 1, nowy: 1},
+            {x: 2, y: 2, nowx: 1, nowy: 1},
+            {x: 3, y: 2, nowx: 1, nowy: 1},
+            {x: 4, y: 2, nowx: 1, nowy: 1}
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerStandRightAnimate() {
+        const frames = [
+            {x: 2, y: 3, nowx: 1, nowy: 1},
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerWalkRightAnimate() {
+        const frames = [
+            {x: 1, y: 3, nowx: 1, nowy: 1},
+            {x: 2, y: 3, nowx: 1, nowy: 1},
+            {x: 3, y: 3, nowx: 1, nowy: 1},
+            {x: 4, y: 3, nowx: 1, nowy: 1}
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerStandUpAnimate() {
+        const frames = [
+            {x: 2, y: 4, nowx: 1, nowy: 1},
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
+    }
+
+    playerWalkUpAnimate() {
+        const frames = [
+            {x: 1, y: 4, nowx: 1, nowy: 1},
+            {x: 2, y: 4, nowx: 1, nowy: 1},
+            {x: 3, y: 4, nowx: 1, nowy: 1},
+            {x: 4, y: 4, nowx: 1, nowy: 1}
+        ]
+
+        this.player = blockBuilderAnimate(this.url, this.unit, frames, this.center);
+        return this.player;
     }
 }

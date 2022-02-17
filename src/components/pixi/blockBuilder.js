@@ -38,3 +38,26 @@ export function blockBuilder(url, unit, source, destination) {
 
     return container;
 }
+
+export function blockBuilderAnimate(url, unit, source, destination) {
+    const container = new PIXI.Container();
+    
+    const baseTexture = PIXI.BaseTexture.from(url)
+
+    const frames = [];
+
+    for (let position of source) {
+        const rect1 = new PIXI.Rectangle((position.x - 1) * unit, (position.y - 1) * unit, unit, unit)
+        const texture1 = new PIXI.Texture(baseTexture, rect1);
+        frames.push(texture1);
+    }
+
+    const animBlock = new PIXI.AnimatedSprite(frames)
+    
+    animBlock.animationSpeed = 0.1;
+    animBlock.loop = true;
+    animBlock.x = (destination.x - 1) * unit;
+    animBlock.y = (destination.y - 1) * unit;
+
+    return animBlock;
+}

@@ -1,5 +1,9 @@
 <template>
     <div>
+        <div class="floating-top-left">
+            <ControlsGuide />
+        </div>
+
         <div class="floating">
             <md-button class="md-raised md-accent md-fab" @click="volume(0)" v-if="isSoundPositive">
                 <md-icon>volume_off</md-icon>
@@ -37,6 +41,7 @@
 </template>
 
 <script>
+import ControlsGuide from './ControlsGuide.vue'
 import PixiMain from './pixi/main'
 import CityMap from './pixi/citymap'
 export default {
@@ -49,15 +54,30 @@ export default {
             unit: 16,
             sound: {volume: 0.05},
             isSoundPositive: true,
-            isInfoGh: false
+            isInfoGh: false,
+            animations: {
+                standDown: null,
+                standUp: null,
+                standLeft: null,
+                standRight: null,
+
+                walkDown: null,
+                walkUp: null,
+                walkLeft: null,
+                walkRight: null
+            }
         }
+    },
+    components: {
+        ControlsGuide
     },
     created() {
         this.initializeWorld();
         this.initializeMap();
         this.initializePlayer();
-        this.initializeMusic();
+        // this.initializeMusic();
         window.addEventListener('keydown', this.keyDownHandler)
+        window.addEventListener('keyup', this.keyUpHandler)
     },
     methods: {
         initializeWorld() {
@@ -67,16 +87,24 @@ export default {
         },
         initializeMap() {
             this.cityMapBlock = this.pixi.createMap();
+            this.cityMapBlock.opacity = 0;
             this.app.stage.addChild(this.cityMapBlock)
         },
         initializePlayer() {
-            this.player = this.pixi.createPlayer();
-            this.app.stage.addChild(this.player);
+            // this.player = this.pixi.createPlayer();
+            this.animations = {
+                standDown: this.pixi.playerStandDownAnimate(),
+                standUp: this.pixi.playerStandUpAnimate(),
+                standLeft: this.pixi.playerStandLeftAnimate(),
+                standRight: this.pixi.playerStandRightAnimate(),
 
-            const wasd = this.pixi.createWasd();
-            wasd.y = window.innerHeight - this.pixi.unit * 7;
-            wasd.x = this.pixi.unit * 1;
-            this.app.stage.addChild(wasd);
+                walkDown: this.pixi.playerWalkDownAnimate(),
+                walkUp: this.pixi.playerWalkUpAnimate(),
+                walkLeft: this.pixi.playerWalkLeftAnimate(),
+                walkRight: this.pixi.playerWalkRightAnimate()
+            }
+            this.player = this.animations.standDown;
+            this.app.stage.addChild(this.player);
         },
         initializeMusic() {
             this.sound = this.pixi.initBackgrounMusic();
@@ -84,41 +112,41 @@ export default {
         },
         updateCanvas() {
             // update setiap ada perubahan dalam game
+            // this.app.stage.children[1] = this.player;
             this.app.stage.addChild(this.cityMapBlock);
             this.app.stage.addChild(this.player);
+            // this.player.play();
         },
         keyDownHandler(e) {
         // Your handler code here
             let move = {x: 0, y: 0};
             const controls = {
                 w: () => { 
-                    this.player = this.pixi.playerUp();
+                    this.player = this.animations.walkUp;
                     move = {x: 0, y: -1};
                 },
                 a: () => { 
-                    this.player = this.pixi.playerLeft()
+                    this.player = this.animations.walkLeft
                     move = {x: -1, y: 0};
                 },
                 s: () => { 
-                    this.player = this.pixi.playerDown()
+                    this.player = this.animations.walkDown
                     move = {x: 0, y: 1};
                 },
                 d: () => { 
-                    this.player = this.pixi.playerRight()
+                    this.player = this.animations.walkRight
                     move = {x: 1, y: 0}; 
                 }
             };
 
             try {
                 controls[(e.key).toLowerCase()](); 
-                if (
-                    this.pixi.isPassable(this.pixi.getNeighbor(move.x, move.y)) &&
-                    this.pixi.checkAllCollision(move)
-                ) {
+                if (this.pixi.checkAllCollision(move)) {
                     this.cityMapBlock.x -= (move.x * this.unit)
                     this.cityMapBlock.y -= (move.y * this.unit); 
                 }
-
+                // play the animations
+                this.player.play();
                 this.updateCanvas();
                 // this.isInfoGh = false;
                 // this.getAction(this.pixi.cityMapBlock.children[2].children[2], () => {
@@ -129,6 +157,24 @@ export default {
                 console.log(error);
             }
 
+        },
+
+        keyUpHandler(e) {
+            if (e) {
+                const controls = {
+                    w: () => { this.player = this.animations.standUp },
+                    a: () => { this.player = this.animations.standLeft },
+                    s: () => { this.player = this.animations.standDown },
+                    d: () => { this.player = this.animations.standRight }
+                };
+
+                try {
+                    controls[(e.key).toLowerCase()](); 
+                    // play the animations
+                    this.player.play();
+                } catch (error) {}
+                this.updateCanvas();
+            }
         },
         volume(x) {
             // this.sound.stop();
@@ -170,6 +216,16 @@ export default {
         margin-top: 16px;
         margin-right: 16px;
         opacity: 0.8;
+        z-index: 999;
+    }
+
+    .floating-top-left {
+        position: fixed;
+        top:0;
+        left: 0;
+        margin-top: 16px;
+        margin-left: 16px;
+        opacity: 0.6;
         z-index: 999;
     }
 </style>
