@@ -75,7 +75,7 @@ export default {
         this.initializeWorld();
         this.initializeMap();
         this.initializePlayer();
-        // this.initializeMusic();
+        this.initializeMusic();
         window.addEventListener('keydown', this.keyDownHandler)
         window.addEventListener('keyup', this.keyUpHandler)
     },
